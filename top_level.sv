@@ -14,7 +14,7 @@ module top_level(
   logic sc_in,   				  // shift/carry out from/to ALU
    		pariQ,              	  // registered parity flag from ALU
 		zeroQ;                    // registered zero flag from ALU 
-  wire  relj;                     // from control to PC; relative jump enable
+  wire  jump;                     // from control to PC; relative jump enable
   wire  pari,
         zero,
 		sc_clr,
@@ -28,8 +28,7 @@ module top_level(
   PC #(.D(D)) 					  // D sets program counter width
      pc1 (.reset            ,
          .clk              ,
-		 .reljump_en (relj),
-		 .absjump_en (absj),
+		 .jump_en (jump),
 		 .target           ,
 		 .prog_ctr          );
 
@@ -43,29 +42,36 @@ module top_level(
                .mach_code);
 
 // control decoder
-  Control ctl1(.instr(),
+  Control ctl1(.instr(opcode),
   .RegDst  (), 
-  .Branch  (relj)  , 
+  .Branch  ()  , 
+  .Swap     ,  
+  .Jump    (jump),
   .MemWrite , 
   .ALUSrc   , 
   .RegWrite   ,     
   .MemtoReg(),
   .ALUOp());
 
-  assign rd_addrA = mach_code[2:0];
-  assign rd_addrB = mach_code[5:3];
-  assign alu_cmd  = mach_code[8:6];
+  assign opcode  = mach_code[8:6];
+  assign rd_addrA = mach_code[5:4];
+  assign rd_addrB = mach_code[3:2];
+    
+  assign mux1 = Swap ? {rd_addrB, 1} : {rd_addrA, 0};
+  assign mux2 = Swap ? {rd_addrA, 0} : {rd_addrB, 1};
+  assign mux3 = RegDst ? mux1 : rd_addrB;
+  assign inputmux4 = mux1 || 3'b001;
+  assign mux4 = Branch ? inputmux4 : mux2;
 
   reg_file #(.pw(3)) rf1(.dat_in(regfile_dat),	   // loads, most ops
               .clk         ,
               .wr_en   (RegWrite),
-              .rd_addrA(rd_addrA),
-              .rd_addrB(rd_addrB),
-              .wr_addr (rd_addrB),      // in place operation
+              .rd_addrA(mux1),      // read register address 1
+              .rd_addrB(mux4),      // read register address 2
+              .wr_addr (mux3),      // in place operation
               .datA_out(datA),
               .datB_out(datB)); 
 
-  assign muxB = ALUSrc? immed : datB;
 
   alu alu1(.alu_cmd(),
          .inA    (datA),
