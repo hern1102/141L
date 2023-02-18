@@ -7,14 +7,14 @@ module Control #(parameter opwidth = 3, mcodebits = 3)(
 
 always_comb begin
 // defaults
-  RegDst 	=   'b0;   // 1: not in place  just leave 0
-  Branch 	=   'b0;   // 1: branch ()
-  Swap =  'b0;   // 1: swap if swapping 
-  Jump =  'b0;   // 1: jump if jumping 
+  RegDst 	  = 'b0;   // 1: not in place  just leave 0
+  Branch 	  = 'b0;   // 1: branch ()
+  Swap      = 'b0;   // 1: swap if swapping 
+  Jump      = 'b0;   // 1: jump if jumping 
   MemtoReg  =	'b0;   // 1: load -- route memory instead of ALU to reg_file data in
   MemWrite  =	'b0;   // 1: store to memory
-  ALUSrc 	=	'b0;   // 1: immediate  0: second reg file output
-  ALUOp	    =   'b111; // y = a+0;
+  ALUSrc 	  =	'b0;   // 1: immediate  0: second reg file output
+  ALUOp	    = 'b111; // y = a+0;
   RegWrite  =	'b1;   // 0: for store or no op  1: most other operations 
 // sample values only -- use what you need
 case(instr)    // override defaults with exceptions
