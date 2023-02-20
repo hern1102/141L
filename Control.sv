@@ -15,7 +15,6 @@ always_comb begin
   MemtoReg  =	'b0;   // 1: load -- route memory instead of ALU to reg_file data in
   MemWrite  =	'b0;   // 1: store to memory
   ALUSrc 	  =	'b0;   // 1: immediate  0: second reg file output
-  ALUOp	    = 'b111; // y = a+0;
   RegWrite  =	'b1;   // 0: for store or no op  1: most other operations 
 // sample values only -- use what you need
 case(instr)    // override defaults with exceptions
@@ -37,10 +36,11 @@ case(instr)    // override defaults with exceptions
     RegDst = 'b1;
     ALUOp = 3'b011;
 	end
-  3'b100:  begin					// LOAD
+  3'b100:  begin			    // LOAD
     MemtoReg  =	'b1; 
-    ALUSrc = 'b1;
+    ALUSrc = 'b0;
     ALUOp = 3'b100;
+    Swap = 'b1;
 	end
   3'b101:  begin					// STORE
     MemWrite = 'b1; 
