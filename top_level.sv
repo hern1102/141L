@@ -12,6 +12,10 @@ module top_level(
               immed,
               jump_addr,
               branch_addr;
+
+  wire[2:0] alu_op;
+
+  wire[1:0] operation_type;
               
   wire[7:0]   mux1,
               mux2,
@@ -40,7 +44,7 @@ module top_level(
 		    sc_en,
         MemWrite,
         ALUSrc;		              // immediate switch
-  wire[A-1:0] alu_cmd;
+  wire[2:0] alu_cmd;
   wire[8:0]   mach_code;          // machine code
   wire[2:0] rd_addrA, rd_addrB;    // address pointers to reg_file
 // fetch subassembly
@@ -55,8 +59,13 @@ module top_level(
   instr_ROM ir1(.prog_ctr,
                .mach_code);
 
+  assign opcode  = mach_code[8:6];
+  assign rd_addrA = mach_code[5:4];
+  assign rd_addrB = mach_code[3:2];
+
 // control decoder
   Control ctl1(.instr(opcode),
+  .func(operation_type)
   .RegDst  (), 
   .Branch  (), 
   .Swap      ,  
@@ -65,11 +74,7 @@ module top_level(
   .ALUSrc   , 
   .RegWrite ,     
   .MemtoReg(),
-  .ALUOp());
-
-  assign opcode  = mach_code[8:6];
-  assign rd_addrA = mach_code[5:4];
-  assign rd_addrB = mach_code[3:2];
+  .ALUOp(alu_op));
     
   assign mux1 = Swap ? {rd_addrB, 1} : {rd_addrA, 0};
   assign mux2 = Swap ? {rd_addrA, 0} : {rd_addrB, 1};
@@ -91,8 +96,15 @@ module top_level(
   assign muxALU1 = Swap ? 8'b00000000 : datA;
   assign muxALU2 = ALUSrc ? muxALU2In : datB;
   assign muxALU3 = (!RegDst) ? {6'b000000, mach_code[1:0]} : muxALU2;
+  assign operation_type = mach_code[1:0];
 
-  alu alu1(.alu_cmd(),
+  
+ alu_control alu_control_1(.ALUOp(alu_op),
+         .opType(operation_type)    ,
+     .ALUOpFinal(alu_cmd) );  
+  
+  
+  alu alu1(.alu_cmd(alu_cmd),
          .inA    (muxALU1),
 		 .inB    (muxALU2),
 		 .sc_i   (sc),   // output from sc register

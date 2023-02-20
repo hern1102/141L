@@ -1,8 +1,9 @@
 // control decoder
 module Control #(parameter opwidth = 3, mcodebits = 3)(
   input [mcodebits-1:0] instr,    // subset of machine code (any width you need)
+  input [1:0] func, //to help get swap
   output logic RegDst, Swap, Branch, 
-     MemtoReg, MemWrite, ALUSrc, RegWrite,
+     MemtoReg, MemWrite, ALUSrc, RegWrite, Jump,
   output logic[opwidth-1:0] ALUOp);	   // for up to 8 ALU operations
 
 always_comb begin
@@ -18,15 +19,48 @@ always_comb begin
   RegWrite  =	'b1;   // 0: for store or no op  1: most other operations 
 // sample values only -- use what you need
 case(instr)    // override defaults with exceptions
-  'b0000:  begin					// store operation
-               MemWrite = 'b1;      // write to data mem
-               RegWrite = 'b0;      // typically don't also load reg_file
-			 end
-  'b00001:  ALUOp      = 'b000;  // add:  y = a+b
-  'b00010:  begin				  // load
-			   MemtoReg = 'b1;    // 
-             end
-// ...
+  3'b000:  begin					// R type operations (add, xor, xor_reduce, and)
+      RegDst = 1'b1;
+      ALUOp = 3'b000;
+	end
+  3'b001:  begin					// BEQ 
+    Branch = 'b1;
+    ALUSrc = 'b1;
+    RegWrite = 'b0;
+    ALUOp = 3'b001;
+	end
+  3'b010:  begin					// SRL
+    RegDst = 'b1;
+    ALUOp = 3'b010;
+	end
+  3'b011:  begin					// SLL
+    RegDst = 'b1;
+    ALUOp = 3'b011;
+	end
+  3'b100:  begin					// LOAD
+    MemtoReg  =	'b1; 
+    ALUSrc = 'b1;
+    ALUOp = 3'b100;
+	end
+  3'b101:  begin					// STORE
+    MemWrite = 'b1; 
+    ALUSrc = 'b1;
+    ALUOp = 3'b101;
+    RegWrite = 'b0;
+	end
+  3'b110:  begin					// JUMP
+    Jump = 'b1;
+    ALUOp = 3'b110;
+    RegWrite = 'b0;
+	end
+  3'b111:  begin					// I-Type
+    if(func == 2'b10) begin 
+            Swap = 'b1;
+    end
+    RegDst = 'b1;
+    ALUOp = 3'b111;
+	end
+      
 endcase
 
 end
