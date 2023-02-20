@@ -12,9 +12,7 @@ module PC #(parameter D=8)(
   always_ff @(posedge clk)
     if(reset)
 	  prog_ctr <= '0;
-	else if(reljump_en)
-	  prog_ctr <= prog_ctr + target;
-    else if(absjump_en)
+    else if(jump_en)
 	  prog_ctr <= target;
 	else
 	  prog_ctr <= prog_ctr + 'b1;

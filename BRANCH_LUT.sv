@@ -1,12 +1,13 @@
 module BRANCH_LUT #(parameter D=8)(
   input       [ 7:0] index,	   // target 4 values
-  output logic[D-1:0] addr);
+  output logic[D-1:0] branch_addr);
 
-  always_comb case(addr)
-    0: target = -5;   // go back 5 spaces
-	1: target = 20;   // go ahead 20 spaces
-	2: target = '1;   // go back 1 space   1111_1111_1111
-	default: target = 'b0;  // hold PC  
+  always_comb case(branch_addr)
+	0: branch_addr = 00001111;   // go back 5 spaces
+	1: branch_addr = 00001110;   // go ahead 20 spaces
+	2: branch_addr = 00001100;  // go back 1 space   1111_1111_1111
+	default: branch_addr = 'b0;  // hold PC 
+
   endcase
 
 endmodule

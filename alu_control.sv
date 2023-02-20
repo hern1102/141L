@@ -6,7 +6,6 @@ module alu_control (
 
 always_comb begin
 // defaults
-  ALUOp	  =  3'b111; // y = a+0;
   
 // sample values only -- use what you need
 case(ALUOp)    

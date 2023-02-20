@@ -3,15 +3,17 @@ module top_level(
   input        clk, reset, req, 
   output logic done);
   parameter D = 12,             // program counter width
-            A = 3;             		  // ALU command bit width
+            A = 3;             	// ALU command bit width
   wire[D-1:0] target, 			  // jump 
               prog_ctr;
   wire        RegWrite;
+  wire 		  MemtoReg, branch, swap, regDst;
   wire[7:0]   datA,datB,		  // from RegFile
 			        rslt,               // alu output
               immed,
               jump_addr,
-              branch_addr;
+              branch_addr,
+			  dat_out;
 
   wire[2:0] alu_op;
 
@@ -65,22 +67,22 @@ module top_level(
 
 // control decoder
   Control ctl1(.instr(opcode),
-  .func(operation_type)
-  .RegDst  (), 
-  .Branch  (), 
-  .Swap      ,  
-  .Jump    (jump),
+  .func   (operation_type),
+  .RegDst (regDst), 
+  .Branch (branch), 
+  .Swap  (swap),  
+  .Jump  (jump),
   .MemWrite , 
   .ALUSrc   , 
   .RegWrite ,     
-  .MemtoReg(),
+  .MemtoReg(MemtoReg),
   .ALUOp(alu_op));
     
-  assign mux1 = Swap ? {rd_addrB, 1} : {rd_addrA, 0};
-  assign mux2 = Swap ? {rd_addrA, 0} : {rd_addrB, 1};
-  assign mux3 = RegDst ? mux1 : rd_addrB;
+  assign mux1 = swap ? {rd_addrB, 1'b1} : {rd_addrA, 1'b0};
+  assign mux2 = swap ? {rd_addrA, 1'b0} : {rd_addrB, 1'b1};
+  assign mux3 = regDst ? mux1 : rd_addrB;
   assign inputmux4 = mux1 || 3'b001;
-  assign mux4 = Branch ? inputmux4 : mux2;
+  assign mux4 = branch ? inputmux4 : mux2;
 
 
   reg_file #(.pw(3)) rf1(.dat_in(mux_mem_reg),	   // loads, most ops
@@ -93,9 +95,9 @@ module top_level(
               .datB_out(datB)); 
 
   assign muxALU2In = {4'b0000, mach_code[3:0]};
-  assign muxALU1 = Swap ? 8'b00000000 : datA;
+  assign muxALU1 = swap ? 8'b00000000 : datA;
   assign muxALU2 = ALUSrc ? muxALU2In : datB;
-  assign muxALU3 = (!RegDst) ? {6'b000000, mach_code[1:0]} : muxALU2;
+  assign muxALU3 = (!regDst) ? {6'b000000, mach_code[1:0]} : muxALU2;
   assign operation_type = mach_code[1:0];
 
   
@@ -118,24 +120,24 @@ module top_level(
 
   // lookup table to facilitate jumps/branches
   JUMP_LUT #(.D(D))
-    pl1 (.index  (jumpIdx),
-         .addr   (jump_addr)       );   
+    jump1 (.index  (jumpIdx),
+         .jump_addr   (jump_addr)       );   
 
   // lookup table to facilitate jumps/branches
   BRANCH_LUT #(.D(D))
-    pl1 (.index  (branchIdx),
-         .addr   (branch_addr)      );   
+    branch1 (.index  (branchIdx),
+         .branch_addr   (branch_addr)      );   
 
-  assign AND_output = Branch && zero;
-  assign OR_output = AND_output || Jump;
-  assign mux_j_b = Branch ? branch_addr : jump_addr;
+  assign AND_output = branch && zero;
+  assign OR_output = AND_output || jump;
+  assign mux_j_b = branch ? branch_addr : jump_addr;
   assign muxPC = OR_output ? mux_j_b : prog_ctr;
 
   dat_mem dm1(.dat_in(datB)  ,  // from reg_file
              .clk           ,
 			 .wr_en  (MemWrite), // stores
 			 .addr   (rslt),
-       .dat_out);
+       .dat_out(dat_out));
 
   assign mux_mem_reg = MemtoReg ? dat_out : rslt;
 
