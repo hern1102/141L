@@ -16,6 +16,36 @@ always_comb begin
   zero = !rslt;
   pari = ^rslt;
   case(alu_cmd)
+    3'b000: begin 
+      rslt = inA + inB;
+    end
+     3'b001: begin 
+      rslt = inA - inB;
+    end
+     3'b010: begin 
+      rslt = inA >> inB;
+    end
+     3'b011: begin 
+      rslt = inA << inB;
+    end
+     3'b100: begin 
+      rslt = inA ^ inB;
+    end
+     3'b101: begin 
+      rslt = ^{inA, inB};
+    end
+     3'b110: begin 
+      rslt = inA & inB;
+    end
+     3'b111: begin 
+    end
+  endcase
+end
+   
+endmodule
+
+
+/*
     3'b000: // add 2 8-bit unsigned; automatically makes carry-out
       {sc_o,rslt} = inA + inB + sc_i;
 	3'b001: // left_shift
@@ -24,7 +54,7 @@ always_comb begin
 		rslt[7:1] = ina[6:0];
 		rslt[0]   = sc_i;
 		sc_o      = ina[7];
-      end*/
+      end
     3'b010: // right shift (alternative syntax -- works like left shift
 	  {rslt,sc_o} = {sc_i,inA};
     3'b011: // bitwise XOR
@@ -37,7 +67,4 @@ always_comb begin
 	  {sc_o,rslt} = inA - inB + sc_i;
 	3'b111: // pass A
 	  rslt = inA;
-  endcase
-end
-   
-endmodule
+*/
