@@ -28,7 +28,7 @@ Control.sv
 reg_file.sv
 
 ### ALU and ALU Control
-alu.sv
+alu.sv  
 alu_control.sv
 
 ### Data Memory
