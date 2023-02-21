@@ -1,5 +1,3 @@
-README
-
 # CSE141L MILESTONE 2
 
 ### Members
@@ -13,8 +11,8 @@ README
 * top_level.sv
 
 ### Lookup Tables
-BRANCH_LUT.sv
-JUMP_LUT.sv
+BRANCH_LUT.sv  
+JUMP_LUT.sv  
 PC_LUT.sv
 
 ### Program Counter
@@ -37,6 +35,6 @@ alu_control.sv
 dat_mem.sv
 
 ### Testbench
-milestone2_quicktest.sv
+milestone2_quicktest.sv  
 milestone2_quicktest_tb-2.sv
 
