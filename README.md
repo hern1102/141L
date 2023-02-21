@@ -8,7 +8,7 @@
 ## Navigate the code
 
 ### Top Level
-* top_level.sv
+top_level.sv
 
 ### Lookup Tables
 BRANCH_LUT.sv  
