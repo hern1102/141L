@@ -16,6 +16,7 @@ module top_level(
 			  dat_out;
 
   wire[2:0] alu_op;
+  wire[2:0] opcode;
 
   wire[1:0] operation_type;
               
@@ -28,6 +29,7 @@ module top_level(
               muxALU1,
               muxALU2,
               muxALU3,
+	      muxALU4,
               jumpIdx,
               branchIdx,
               mux_j_b,
@@ -47,8 +49,8 @@ module top_level(
         MemWrite,
         ALUSrc;		              // immediate switch
   wire[2:0] alu_cmd;
-  wire[8:0]   mach_code;          // machine code
-  wire[2:0] rd_addrA, rd_addrB;    // address pointers to reg_file
+  wire[8:0] mach_code;          // machine code
+  wire[1:0] rd_addrA, rd_addrB;    // address pointers to reg_file
 // fetch subassembly
   PC #(.D(D)) 					  // D sets program counter width
      pc1 (.reset            ,
@@ -95,9 +97,10 @@ module top_level(
               .datB_out(datB)); 
 
   assign muxALU2In = {4'b0000, mach_code[3:0]};
-  assign muxALU1 = swap ? 8'b00000000 : datA;
+  assign muxALU1 =(swap & !MemtoReg) ? 8'b00000000 : datA;
   assign muxALU2 = ALUSrc ? muxALU2In : datB;
   assign muxALU3 = (!regDst) ? {6'b000000, mach_code[1:0]} : muxALU2;
+  assign muxALU4 = regDst ? muxALU2 : muxALU3;
   assign operation_type = mach_code[1:0];
 
   
@@ -108,7 +111,7 @@ module top_level(
   
   alu alu1(.alu_cmd(alu_cmd),
          .inA    (muxALU1),
-		 .inB    (muxALU2),
+		 .inB    (muxALU4),
 		 .sc_i   (sc),   // output from sc register
 		 .rslt       ,
 		 .sc_o (sc_o), // input to sc register
