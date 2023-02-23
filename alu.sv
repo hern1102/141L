@@ -32,7 +32,8 @@ always_comb begin
       rslt = inA ^ inB;
     end
      3'b101: begin 
-      rslt = ^{inA, inB};
+      rslt = inA ^ inB;
+      rslt = ^rslt;
     end
      3'b110: begin 
       rslt = inA & inB;
