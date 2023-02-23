@@ -125,7 +125,7 @@ module top_level(
   assign operation_type = mach_code[1:0];
 
   assign muxALU2In = {4'b0000, mach_code[3:0]};
-  assign muxALU1 = swap ? 8'b00000000 : datA;
+  assign muxALU1 = (swap && !MemWrite) ? 8'b00000000 : datA;
   assign muxALU2 = ALUSrc ? muxALU2In : datB;
   assign muxALU3 = ls ? {6'b000000, operation_type} : muxALU2;
   assign muxALU4 = isig ? {6'b000000, mach_code[3:2]} : muxALU3;
