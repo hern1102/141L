@@ -50,6 +50,7 @@ case(instr)    // override defaults with exceptions
     ALUSrc = 'b1;
     ALUOp = 3'b101;
     RegWrite = 'b0;
+    Swap = 'b1;
 	end
   3'b110:  begin					// JUMP
     Jump = 'b1;
