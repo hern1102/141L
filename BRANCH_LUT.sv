@@ -1,8 +1,8 @@
 module BRANCH_LUT (
   input       [ 7:0] index,	   // target 4 values
-  output logic[7:0] branch_addr);
+  output logic[8:0] branch_addr);
   
-  logic[7:0] core[2**8];
+  logic[8:0] core[2**8];
   assign branch_addr = core[index];
 
 

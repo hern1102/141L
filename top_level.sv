@@ -21,12 +21,16 @@ module top_level(
         regWrite;
   wire[2:0] alu_op;
 
+    /* 9 bit wires */
+   wire[8:0] prog_ctr,
+                 mux_j_b,
+                 jump_addr,
+                 muxPC,
+                 branch_addr;
+
   /* 8 bit wires */
   wire[7:0] target, 	
-            prog_ctr,
             immed,
-            jump_addr,
-            branch_addr,
             dat_out,
             rslt;
 
@@ -40,9 +44,8 @@ module top_level(
 			        muxALU4,
               jumpIdx,
               branchIdx,
-              mux_j_b,
-              muxPC,
               mux_mem_reg;
+              
   /* 3 bit wires */
 
     wire[2:0] mux1,
@@ -78,8 +81,7 @@ module top_level(
 // fetch subassembly
   PC pc1 (.reset            ,
          .clk              ,
-                 .branch_en (branch),
-		 .jump_en (jump),
+      .jb_en (OR_output),
 		 .target  (muxPC)    ,
 		 .prog_ctr          );
 
@@ -130,7 +132,6 @@ module top_level(
   assign muxALU3 = ls ? {6'b000000, operation_type} : muxALU2;
   assign muxALU4 = isig ? {6'b000000, mach_code[3:2]} : muxALU3;
   
-
   
  alu_control aluC1(.ALUOp(alu_op),
          .opType(operation_type)    ,
@@ -180,6 +181,6 @@ module top_level(
       sc_in <= sc_o;
   end
 
-  assign done = prog_ctr == 128;
+  assign done = prog_ctr == 300;
  
 endmodule

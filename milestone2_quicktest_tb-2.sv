@@ -17,15 +17,16 @@ end
 
 initial begin
 
-  dut.rf1.core[3'b000] = 8'b00000000;
-  dut.rf1.core[3'b001] = 8'b00000000;
-  dut.rf1.core[3'b010] = 8'b00000000;
-  dut.rf1.core[3'b011] = 8'b00000000;
-  dut.rf1.core[3'b100] = 8'b00000000;
+
+//initial state of registers
+  dut.rf1.core[0] = 8'b00000000;
+  dut.rf1.core[1] = 8'b00000000;
+  dut.rf1.core[2] = 8'b00000000;
+  dut.rf1.core[3] = 8'b00000000;
+  dut.rf1.core[4] = 8'b00000000;
   dut.rf1.core[5] = 8'b00000000;
   dut.rf1.core[6] = 8'b00000000;
   dut.rf1.core[7] = 8'b00000000;
-  dut.rf1.core[8] = 8'b00000000;
 
   dut.dm1.core[0] = 8'b00000001;
   dut.dm1.core[1] = 8'b00000010;

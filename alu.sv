@@ -10,11 +10,12 @@ module alu(
 			   zero      // NOR (output)
 );
 
+assign zero = !rslt;
+assign pari = ^rslt;
+
 always_comb begin 
   rslt = 'b0;            
   sc_o = 'b0;    
-  zero = !rslt;
-  pari = ^rslt;
   case(alu_cmd)
     3'b000: begin 
       rslt = inA + inB;
@@ -32,8 +33,7 @@ always_comb begin
       rslt = inA ^ inB;
     end
      3'b101: begin 
-      rslt = inA ^ inB;
-      rslt = ^rslt;
+      rslt = ^(inA ^ inB);
     end
      3'b110: begin 
       rslt = inA & inB;

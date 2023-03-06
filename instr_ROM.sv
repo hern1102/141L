@@ -2,10 +2,10 @@
 // deep 
 // 9 bits wide; as deep as you wish
 module instr_ROM (
-  input       [7:0] prog_ctr,    // prog_ctr	  address pointer
+  input       [8:0] prog_ctr,    // prog_ctr	  address pointer
   output logic[ 8:0] mach_code);
 
-  logic[8:0] core[2**8];
+  logic[8:0] core[2**9];
   initial							    // load the program
     $readmemb("mach_code.txt",core);
 

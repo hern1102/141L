@@ -38,12 +38,14 @@ case(instr)    // override defaults with exceptions
   3'b011:  begin					// SLL
     RegDst = 'b1;
     ALUOp = 3'b011;
+    ALUSrc =	'b1; 
 	end
   3'b100:  begin					// LOAD
     MemtoReg  =	'b1; 
-	LS = 'b1;
+	  LS = 'b1;
     ALUSrc = 'b1;
     ALUOp = 3'b100;
+    iSig = 'b1;
 	end
   3'b101:  begin					// STORE
     MemWrite = 'b1; 
@@ -51,6 +53,7 @@ case(instr)    // override defaults with exceptions
     ALUOp = 3'b101;
     RegWrite = 'b0;
     Swap = 'b1;
+    iSig = 'b1;
 	end
   3'b110:  begin					// JUMP
     Jump = 'b1;
