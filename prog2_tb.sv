@@ -87,22 +87,21 @@ initial begin
 
   //these need to be updated based on 10 bit pointer
   //initialize jump table
-    DUT.jump1.core[0] = 10'b0000001010; //10
-    DUT.jump1.core[1] = 10'b0101101010; //362
-    DUT.jump1.core[2] = 10'b0110010111; //407
-    DUT.jump1.core[3] = 10'b0111100101; //485
-    DUT.jump1.core[4] = 10'b0111111010; //506
+    DUT.jump1.core[0] = 10'b0000001001; //9
+    DUT.jump1.core[1] = 10'b0101100111; //359
+    DUT.jump1.core[2] = 10'b0110010001; //401
+    DUT.jump1.core[3] = 10'b0111101111; //495
+    DUT.jump1.core[4] = 10'b0111011011; //475
   
   //initialize branch table
-    DUT.branch1.core[0] = 10'b1001001111; //591
-    DUT.branch1.core[1] = 10'b0111011001; //473
-    DUT.branch1.core[2] = 10'b0110111110; //446
-    DUT.branch1.core[3] = 10'b0101110000; //401
-    DUT.branch1.core[4] = 10'b0101100001; //353
-    DUT.branch1.core[5] = 10'b0101110000; //368
-    DUT.branch1.core[6] = 10'b0110011101; //413
-    DUT.branch1.core[7] = 10'b1000110101; //565
-
+    DUT.branch1.core[0] = 10'b0101101011; //577
+    DUT.branch1.core[1] = 10'b0111001111; //463
+    DUT.branch1.core[2] = 10'b0110110101; //437
+    DUT.branch1.core[3] = 10'b0110001011; //395
+    DUT.branch1.core[4] = 10'b0101011110; //350
+    DUT.branch1.core[5] = 10'b0101101011; //363
+    DUT.branch1.core[6] = 10'b0110010101; //405
+    DUT.branch1.core[7] = 10'b1000101000; //552
 
 // generate parity from random 11-bit messages 
   for(int i=0; i<15; i++) begin
