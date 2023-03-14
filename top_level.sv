@@ -22,11 +22,12 @@ module top_level(
   wire[2:0] alu_op;
 
     /* 10 bit wires */
-  wire[9:0] prog_ctr,
-            mux_j_b,
-            jump_addr,
-            muxPC,
-            branch_addr;
+   wire[9:0] prog_ctr,
+                 mux_j_b,
+                 jump_addr,
+                 muxPC,
+   		 branch_addr;
+          
 
   /* 8 bit wires */
   wire[7:0] target, 	
@@ -110,11 +111,11 @@ module top_level(
   .ALUOp(alu_op));
     
 
-  assign mux1 = swap ? {rd_addrA, 1'b1} : {rd_addrA, 1'b0};
+  assign mux1 = swap ? {rd_addrA, 1'b1} : {rd_addrA, 1'b0}; 
   assign muxExtra = (swap && MemWrite) ? {rd_addrB, 1'b1} : mux1;
   assign mux2 = swap ? {rd_addrA, 1'b0} : {rd_addrB, 1'b1};
   assign mux3 = regDst ? muxExtra : {rd_addrB, 1'b1};
-  assign inputmux4 = muxExtra || 3'b001;
+  assign inputmux4 = muxExtra + 3'b001;
   assign mux4 = branch ? inputmux4 : mux2;
 
   reg_file #(.pw(3)) rf1(
@@ -131,7 +132,7 @@ module top_level(
 
   assign muxALU2In = {4'b0000, mach_code[3:0]};
   assign muxALU1 = (swap && !MemWrite) ? 8'b00000000 : datA;
-   assign muxALU2 = ALUSrc ? muxALU2In : datB;
+  assign muxALU2 = ALUSrc ? muxALU2In : datB;
   assign muxALU3 = ls ? {6'b000000, operation_type} : muxALU2;
   assign muxALU4 = isig ? {6'b000000, mach_code[3:2]} : muxALU3;
   
@@ -184,6 +185,6 @@ module top_level(
       sc_in <= sc_o;
   end
 
-  assign done = prog_ctr == 285;
+  assign done = prog_ctr == 593;
  
 endmodule
