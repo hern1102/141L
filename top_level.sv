@@ -21,12 +21,12 @@ module top_level(
         regWrite;
   wire[2:0] alu_op;
 
-    /* 9 bit wires */
-   wire[8:0] prog_ctr,
-                 mux_j_b,
-                 jump_addr,
-                 muxPC,
-                 branch_addr;
+    /* 10 bit wires */
+  wire[9:0] prog_ctr,
+            mux_j_b,
+            jump_addr,
+            muxPC,
+            branch_addr;
 
   /* 8 bit wires */
   wire[7:0] target, 	
