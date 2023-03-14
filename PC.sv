@@ -1,7 +1,7 @@
 // program counter
 // supports both relative and absolute jumps
 // use either or both, as desired
-module PC #(parameter D=9)(
+module PC #(parameter D=10)(
   input reset,					// synchronous reset
         clk,
         jb_en,			// abs. jump enable
